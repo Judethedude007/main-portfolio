@@ -1,0 +1,12 @@
+{
+  "name": "jude-thomas-portfolio",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "npx serve ."
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
