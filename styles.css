@@ -42,12 +42,16 @@
 
 html { scroll-behavior: smooth; overflow-x: hidden; }
 
+/* profile-text wrapper — only needed on mobile, inert on desktop */
+.profile-text { display: contents; }
+
 body {
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.5;
     cursor: none;
+    overflow-x: hidden;
 }
 
 body::before {
@@ -1297,6 +1301,14 @@ body.cursor-hover #cursor-dot {
 /* =============================================
    RESPONSIVE
    ============================================= */
+
+/* ── Touch / mobile: restore native cursor ── */
+@media (hover: none) and (pointer: coarse) {
+    *, *::before, *::after { cursor: auto !important; }
+    a, button, .tools-more-btn, .modal-btn, .modal-close { cursor: pointer !important; }
+    #cursor-dot, #cursor-ring { display: none !important; }
+}
+
 @media (max-width: 1100px) {
     .page-layout { grid-template-columns: 300px 1fr; }
     .sticky-sidebar { width: auto; }
@@ -1306,20 +1318,155 @@ body.cursor-hover #cursor-dot {
 
 @media (max-width: 820px) {
     .page-layout { grid-template-columns: 1fr; }
+
+    /* Nav moves to bottom — thumb-friendly on mobile */
+    .topnav {
+        top: auto;
+        bottom: 24px;
+        transform: translateX(-50%);
+    }
+
     .sticky-sidebar {
         position: relative;
         height: auto;
-        padding: 100px 24px 40px;
+        padding: 36px 24px 28px;
     }
-    .scroll-content { padding-top: 0; }
-    .scroll-content { padding-top: 0; }
+
+    /* Clean compact vertical profile card on mobile */
+    .card-deco { display: none; }
+    .profile-card {
+        max-width: 340px;
+        width: 100%;
+        display: block;          /* revert to desktop block layout */
+        text-align: center;
+        padding: 24px 22px 20px;
+        border-radius: 20px;
+    }
+    .profile-text { display: contents; } /* transparent wrapper, no layout impact */
+    .profile-image {
+        width: 90px;
+        height: 90px;
+        min-width: unset;
+        margin: 0 auto 14px;
+    }
+    .profile-name { font-size: 20px; margin-bottom: 8px; }
+    .profile-bio   { font-size: 12px; margin-bottom: 14px; }
+    .social-links  { justify-content: center; }
+
+    /* Bottom padding so content isn't hidden behind fixed bottom nav */
+    .scroll-content { padding-top: 0; padding-bottom: 90px; }
     .section-hero, .section-block { padding: 60px 24px; }
+    .tools-featured { grid-template-columns: repeat(4, 1fr); }
     .tools-grid { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
 }
 
 @media (max-width: 480px) {
+    /* Navigation */
+    .topnav { bottom: 16px; padding: 8px 14px; }
+
+    /* Hero headings — "SOFTWARE" / "ENGINEER" (8 chars).
+       At 390px: 12vw = 46.8px → fits in 350px available. */
+    .hero-main,
+    .hero-ghost {
+        font-size: clamp(32px, 12vw, 60px);
+        letter-spacing: -1px;
+    }
+
+    /* Section headings — worst case is "ACHIEVEMENTS" (12 chars).
+       At 390px: 8vw = 31.2px → 31px × 12 × 0.70 – 1×11 ≈ 249px in 350px available ✓ */
+    .section-title-main,
+    .section-title-ghost {
+        font-size: clamp(24px, 8vw, 48px);
+        letter-spacing: -0.5px;
+    }
+    .section-heading { margin-bottom: 32px; }
+
+    /* Section spacing */
+    .section-hero, .section-block { padding: 48px 20px; }
+
+    /* Hero description */
+    .hero-description { font-size: 14px; margin-bottom: 32px; margin-top: 18px; }
+
+    /* Stats — keep 3 in a row */
+    .stats { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 16px 0; }
+    .stat-number { font-size: clamp(26px, 8vw, 40px); letter-spacing: -1px; }
+    .stat-label { font-size: 10px; letter-spacing: 1px; }
+
+    /* CTA Buttons */
     .cta-buttons { flex-direction: column; }
-    .stats { grid-template-columns: 1fr; }
-    .topnav { top: 16px; padding: 8px 14px; }
+    .btn { text-align: center; }
+
+    /* Profile card — already set above in ≤820px; just tweak photo size */
+    .profile-image { width: 76px; height: 76px; }
+    .profile-name {
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0px;
+    }
+    .profile-bio { font-size: 11px; }
+
+    /* Hero description — must not exceed screen width */
+    .hero-description { max-width: 100%; font-size: 13px; margin-bottom: 28px; margin-top: 16px; }
+
+    /* Projects */
+    .project-thumb,
+    .project-thumb-emoji { width: 52px; height: 52px; min-width: 52px; font-size: 1.3rem; }
+    .project-row { padding: 14px; gap: 10px; }
+    .project-info h3 { font-size: 14px; }
+    .project-info p  { font-size: 12px; }
+
+    /* Achievement hero */
+    .achievement-hero { padding: 1rem; }
+    .achievement-hero-body { flex-direction: column; }
+    .achievement-hero-title { font-size: 0.88rem; }
+    .achievement-hero-sub { font-size: 0.75rem; }
+    .achievement-hero-tags li { font-size: 0.62rem; }
+
+    /* Tools */
+    .tools-featured { grid-template-columns: repeat(4, 1fr); }
+    .tools-cat-icons { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+
+    /* Modal */
+    .modal-overlay { padding: 0.75rem; align-items: flex-end; }
+    .modal-box { padding: 1.25rem; border-radius: 20px 20px 12px 12px; max-height: 90vh; }
+    .modal-title { font-size: 1.05rem; }
+
+    /* Contact form */
+    .btn-submit { width: 100%; text-align: center; }
+}
+
+@media (max-width: 400px) {
+    /* 3-column tools on very small phones (< 400px) */
+    .tools-featured { grid-template-columns: repeat(3, 1fr); }
+    .tools-cat-icons { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+}
+
+@media (max-width: 375px) {
+    /* At 360px: 9.5vw = 34.2px for hero, 7.5vw = 27px for sections */
+    .hero-main,
+    .hero-ghost { font-size: clamp(28px, 9.5vw, 36px); letter-spacing: 0px; }
+    .section-title-main,
+    .section-title-ghost { font-size: clamp(22px, 7.5vw, 30px); letter-spacing: 0px; }
+
+    /* Profile card goes vertical again on very small phones */
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 16px 16px;
+        gap: 12px;
+    }
+    .profile-image { width: 80px; height: 80px; min-width: 80px; }
+    .profile-name { font-size: 18px; }
+    .social-links { justify-content: center; }
+
+    .topnav { gap: 2px; padding: 8px 10px; }
+    .nav-icon { width: 32px; height: 32px; }
+    .stats { gap: 6px; }
+    .stat-number { font-size: clamp(22px, 7vw, 30px); }
+    .stat-label { font-size: 9px; letter-spacing: 0.5px; }
+    .achievement-hero-stat { font-size: 1.1rem; }
+    .section-hero, .section-block { padding: 40px 16px; }
 }

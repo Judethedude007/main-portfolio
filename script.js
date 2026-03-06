@@ -155,6 +155,15 @@ document.querySelectorAll('a[href="#"]').forEach(link => {
         mouse.y = e.clientY - r.top;
     });
     section.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+
+    // Touch support — lets fingers repel nodes on mobile
+    section.addEventListener('touchmove', e => {
+        const r = section.getBoundingClientRect();
+        const t = e.touches[0];
+        mouse.x = t.clientX - r.left;
+        mouse.y = t.clientY - r.top;
+    }, { passive: true });
+    section.addEventListener('touchend', () => { mouse.x = -9999; mouse.y = -9999; });
     window.addEventListener('resize', resize);
 
     // defer until after first paint so getBoundingClientRect is accurate
@@ -171,6 +180,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── 1. CUSTOM TRAILING CURSOR ──────────────────────────────────────────
     (function () {
+        // Disable custom cursor on touch / mobile devices
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
         const dot  = document.getElementById('cursor-dot');
         const ring = document.getElementById('cursor-ring');
         if (!dot || !ring) return;
