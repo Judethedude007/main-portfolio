@@ -265,6 +265,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { threshold: 0.4 });
     sections.forEach(s => navObserver.observe(s));
 
+    // ── 4b. PROFILE CARD SUBTLE PARALLAX ─────────────────────────────────
+    const sidebar = document.querySelector('.sticky-sidebar');
+    if (sidebar && window.innerWidth > 820) {
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const shift = Math.sin(scrollY * 0.0015) * 22;
+                    sidebar.style.transform = `translateY(${shift}px)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
     // ── 5. CHARACTER-SPLIT HERO TEXT ──────────────────────────────────────
     document.querySelectorAll('.hero-main, .hero-ghost').forEach((h, hi) => {
         const text = h.textContent.trim();
